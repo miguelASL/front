@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buenos Días</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            animation: sky-color 10s linear;
+        }
+
+        @keyframes sky-color {
+            0% {
+                background: linear-gradient(to bottom, #FF4500, #FF6347);
+            }
+
+            5% {
+                background: linear-gradient(to bottom, #FF6347, #FF7F50);
+            }
+
+            10% {
+                background: linear-gradient(to bottom, #FF7F50, #FF8C00);
+            }
+
+            15% {
+                background: linear-gradient(to bottom, #FF8C00, #FFA500);
+            }
+
+            20% {
+                background: linear-gradient(to bottom, #FFA500, #FFB347);
+            }
+
+            25% {
+                background: linear-gradient(to bottom, #FFB347, #FFD700);
+            }
+
+            30% {
+                background: linear-gradient(to bottom, #FFD700, #FFE4B5);
+            }
+
+            35% {
+                background: linear-gradient(to bottom, #FFE4B5, #E0FFFF);
+            }
+
+            40% {
+                background: linear-gradient(to bottom, #E0FFFF, #B0E0E6);
+            }
+
+            45% {
+                background: linear-gradient(to bottom, #B0E0E6, #87CEEB);
+            }
+
+            50% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            55% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            60% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            65% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            70% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            75% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            80% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            85% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            90% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            95% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+
+            100% {
+                background: linear-gradient(to bottom, #87CEEB, #87CEFA);
+            }
+        }
+
+        .message {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .sun {
+            position: absolute;
+            bottom: -150px;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #FFD700;
+            transform: translateX(-50%);
+            animation: sunrise 10s linear forwards;
+        }
+
+        @keyframes sunrise {
+            0% {
+                bottom: 30px;
+            }
+
+            100% {
+                bottom: 65%;
+            }
+        }
+
+        .cloud {
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            width: 200px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: cloud-moving 40s linear infinite;
+        }
+
+        .cloud:before,
+        .cloud:after {
+            content: '';
+            position: absolute;
+            background: #fff;
+            width: 100px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .cloud:before {
+            top: -20px;
+            left: 20px;
+        }
+
+        .cloud:after {
+            top: -10px;
+            right: 20px;
+        }
+
+        @keyframes cloud-moving {
+            0% {
+                transform: translateX(-15vh);
+            }
+
+            100% {
+                transform: translateX(10vh);
+            }
+        }
+
+        .sea {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(to top, #00008B, #1E90FF, #7ac0eb);
+        }
+
+        .boat {
+            height: 45px;
+            width: 130px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            background: #cb3a37;
+            bottom: 20%;
+            left: 70%;
+            position: absolute;
+            z-index: 1;
+            transition: all ease 1.2s;
+
+            &.night {
+                left: 150%;
+            }
+
+            .cabin {
+                position: absolute;
+                top: -35px;
+                left: 40px;
+                width: 70px;
+                height: 35px;
+                background: #f5f5f5;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 60%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 100%;
+                    background: #8b9a97;
+                    z-index: 2;
+                    box-shadow:
+                        20px 0 #8b9a97,
+                        -20px 0 #8b9a97;
+                }
+            }
+
+            .top {
+                position: absolute;
+                top: -35px;
+                left: 40px;
+                width: 70px;
+                height: 10px;
+                background: #cb3a37;
+            }
+
+            .pole {
+                position: absolute;
+                top: -50px;
+                left: 30px;
+                width: 10px;
+                height: 50px;
+                background: #8b9a97;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    width: 10px;
+                    height: 10px;
+                    top: 0;
+                    left: -5px;
+                    background: #8b9a97;
+                }
+            }
+        }
+
+        @keyframes boat-sailing {
+            0% {
+                left: -10%;
+            }
+
+            100% {
+                left: 110%;
+            }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sun"></div>
+    <div class="message">
+        <h1>Días Amorcito</h1>
+        <p>porque buena ya estás tu</p>
+    </div>
+    <div class="cloud"></div>
+    <div class="sea"></div>
+    <div class="boat">
+        <div class="cabin"></div>
+        <div class="top"></div>
+        <div class="pole"></div>
+    </div>
+</body>
+
+</html>
