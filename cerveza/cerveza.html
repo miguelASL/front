@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Día del padre</title>
+    <style>
+        html {
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .interface {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .titulo {
+            color: white;
+            margin-bottom: 100px;
+            font-size: 22px;
+            font-family: math;
+        }
+
+        .subtitulo {
+            color: white;
+            margin-top: 100px;
+            font-size: 22px;
+            font-family: math;
+        }
+
+        .contenedor {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        .vaso {
+            border: 5px solid white;
+            border-radius: 5px;
+            width: 150px;
+            max-width: 300px;
+            height: 200px;
+            max-height: 450px;
+            border-top: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .cerveza {
+            background-color: yellow;
+            width: 100%;
+            height: 85%;
+            animation-name: fill;
+        }
+
+        .espuma {
+            background-color: white;
+            width: 100%;
+            height: 15%;
+            animation-name: fill-head;
+        }
+
+        .mango {
+            width: 50px;
+            max-width: 120px;
+            height: 124px;
+            max-height: 330px;
+            border: 8px solid white;
+            border-radius: 100px;
+            border-left: none;
+            background-color: transparent;
+            margin-left: -4px;
+            z-index: -1;
+        }
+
+        .mensaje {
+            color: black;
+            margin-bottom: 100px;
+            font-size: 18px;
+            font-family: math;
+            position: absolute;
+            margin-right: 50px;
+            top: 45%;
+        }
+
+        @keyframes fill {
+            0% {
+                height: 0%;
+            }
+            100% {
+                height: 85%;
+            }
+        }
+
+        @keyframes fill-head {
+            0% {
+                height: 0%;
+                opacity: 0;
+            }
+            35% {
+                height: 5%;
+                opacity: 0.5;
+            }
+            45% {
+                height: 10%;
+                opacity: 1;
+            }
+            100% {
+                height: 15%;
+                opacity: 1;
+            }
+        }
+
+        .vaso .cerveza,
+        .vaso .espuma {
+            animation-timing-function: cubic-bezier(.2, 0, .4, 1);
+            animation-duration: 4s;
+            animation-fill-mode: forwards;
+            animation-play-state: paused;
+        }
+
+        @media (pointer: fine){
+            .vaso:active .cerveza,
+            .vaso:active .espuma {
+                animation-play-state: running;
+            }
+        }
+
+        @media (pointer: coarse){
+            .vaso:active .cerveza,
+            .vaso:active .espuma {
+                animation-play-state: running;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="interface">
+        <div class="titulo">
+            <p>Disfruta de esta cerveza, te la mereces 🤝</p>
+        </div>
+        <div class="contenedor">
+            <div class="vaso">
+                <div class="espuma"></div>
+                <div class="cerveza"></div>
+            </div>
+            <div class="mango"></div>
+        </div>
+        <div class="mensaje">
+            <span class="text">Dia duro no?</span>
+        </div>
+        <div class="subtitulo">
+            <p>🍺 Pulsa en la jarra para rellenar 🍺</p>
+        </div>
+    </div>
+</body>
+
+</html>
