@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Juego Especial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0e4d7;
+        }
+
+        #gameContainer {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 90%;
+            max-width: 320px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            height: 80px;
+            background-color: #f9d5e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            color: transparent;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .card.revealed,
+        .card.matched {
+            color: #444;
+            transform: scale(1.1);
+        }
+
+        #invitation {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            color: #d81159;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background-color: #ff69b4;
+            opacity: 0.6;
+            border-radius: 50%;
+        }
+
+        @keyframes confetti-animation {
+            0% {
+                transform: translateY(-100vh);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        #timer {
+            font-size: 24px;
+            color: #d81159;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="timer">00:30</div>
+    <div id="gameContainer"></div>
+    <div id="invitation">¡Has conseguido una cena conmigo! 🎁</div>
+
+    <script>
+        const icons = ["❤️", "🌹", "🍫", "🍦", "🎈", "🎁", "❤️", "🌹", "🍫", "🍦", "🎈", "🎁"];
+        let revealedCards = [];
+        let matchedPairs = 0;
+        let gameStarted = false;
+        let timerId;
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function createCard(icon) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.textContent = icon;
+            card.onclick = () => revealCard(card, icon);
+            return card;
+        }
+        function revealCard(card, icon) {
+            if (card.classList.contains("revealed") || revealedCards.length === 2) {
+                return;
+            }
+            card.classList.add("revealed");
+            revealedCards.push({ card, icon });
+            if (revealedCards.length === 2) {
+                setTimeout(checkMatch, 500);
+            }
+        }
+        function checkMatch() {
+            const [firstCard, secondCard] = revealedCards;
+            if (firstCard.icon === secondCard.icon) {
+                firstCard.card.classList.add("matched");
+                secondCard.card.classList.add("matched");
+                matchedPairs++;
+                if (matchedPairs === icons.length / 2) {
+                    document.getElementById("invitation").style.display = "block";
+                    startConfetti();
+                }
+            } else {
+                firstCard.card.classList.remove("revealed");
+                secondCard.card.classList.remove("revealed");
+            }
+            revealedCards = [];
+        }
+        function startConfetti() {
+            const totalConfetti = 500;
+            const delay = 6; // Duración más corta de la animación para cada confeti
+            
+            document.getElementById("timer").style.display = "none";
+            for (let i = 0; i < totalConfetti; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.animation = `confetti-animation ${delay}s linear infinite`;
+                    document.body.appendChild(confetti);
+                }, delay / totalConfetti * i * 1000); // Emite confeti en intervalos regulares
+            }
+        }
+        function initializeGame() {
+            shuffleArray(icons);
+            const gameContainer = document.getElementById("gameContainer");
+            icons.forEach(icon => {
+                gameContainer.appendChild(createCard(icon));
+            });
+            startTimer();
+        }
+        function startTimer() {
+            let timeRemaining = 30;
+            timerId = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(timerId);
+                    endGame();
+                } else {
+                    const minutes = String(Math.floor(timeRemaining / 60)).padStart(2, '0');
+                    const seconds = String(timeRemaining % 60).padStart(2, '0');
+                    document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+                    timeRemaining--;
+                }
+            }, 1000);
+        }
+        function endGame() {
+            if (matchedPairs !== icons.length / 2) {
+                document.getElementById("gameContainer").style.display = "none";
+                document.getElementById("timer").style.display = "none";
+                document.getElementById("invitation").innerHTML = "Se ha acabado el tiempo. <br> Como premio de consolación te has ganado una cena conmigo 🎁";
+                document.getElementById("invitation").style.display = "block";
+                startConfetti();
+            }
+        }
+        initializeGame();
+    </script>
+</body>
+
+</html>
