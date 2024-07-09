@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Laberinto del Amor</title>
+    <style>
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-gap: 2px;
+        }
+
+        .wall {
+            background-color: #8B4513;
+            width: 50px;
+            height: 50px;
+        }
+
+        .path,
+        .player,
+        .reward {
+            width: 50px;
+            height: 50px;
+        }
+
+        .player {
+            background-size: cover;
+            background-image: url('player-image-url.jpg');
+            /* Reemplaza con la URL de tu imagen */
+        }
+
+        .reward {
+            background-size: cover;
+            background-image: url('reward-image-url.jpg');
+            /* Reemplaza con la URL de tu imagen */
+        }
+
+        body {
+            background: black;
+            color: white;
+            font-family: Arial;
+        }
+
+        #grid {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-width: 1000px;
+            min-height: 600px;
+            left: 20%;
+        }
+
+        .block {
+            border: 1px solid black;
+            position: absolute;
+            margin: 1px;
+            width: 50px;
+            height: 50px;
+            font-size: 8px;
+            display: block;
+            background: #666;
+            color: white;
+            -webkit-transition: background-color 100ms linear;
+            -ms-transition: background-color 100ms linear;
+            transition: background-color 100ms linear;
+        }
+
+        .block.generated {
+            background: #fff;
+        }
+
+
+        .block.generated.visited {
+            background: #eef;
+        }
+
+        .block.generated.visited.path {
+            background: #aaf;
+        }
+
+
+        .block.current.error {
+            background: #f00 !important;
+        }
+
+        .block.left {
+            border-left: 1px solid transparent;
+        }
+
+        .block.right {
+            border-right: 1px solid transparent;
+        }
+
+        .block.bottom {
+            border-bottom: 1px solid transparent;
+        }
+
+        .block.top {
+            border-top: 1px solid transparent;
+        }
+
+        a,
+        a:visited {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p>Usa las flechas 🡠🡡🡢🡣 para moverte</p>
+    <button onclick="maze.reset();">Reiniciar</button>
+    <div id="grid"></div>
+
+    <script>
+
+        const congratulationsMessage = 'Enhorabuena, aquí tienes tu premio 🎁';
+        const prizeDescription = 'Pícnic en la playa viendo el atardecer juntos 🌅'; 
+
+        const imagenDelJugadorBase64 ="amor.png"
+
+        const imagenDelPremioBase64 = "maria.png"
+
+        // Función para crear y añadir el estilo
+        function createStyles() {
+            // Crear un elemento <style>
+            const style = document.createElement('style');
+            style.type = 'text/css';
+
+            // Definir las reglas CSS utilizando las variables
+            const cssRules = `
+        .block.generated.target {
+            background-image: url('${imagenDelPremioBase64}');
+            background-size: cover; /* Ajusta según necesites */
+        }
+        .block.current {
+            background-image: url('${imagenDelJugadorBase64}');
+            background-size: cover; /* Ajusta según necesites */
+        }
+    `;
+
+            // Añadir las reglas CSS al elemento <style>
+            if (style.styleSheet) {
+                // Soporte para IE
+                style.styleSheet.cssText = cssRules;
+            } else {
+                // Soporte para otros navegadores
+                style.appendChild(document.createTextNode(cssRules));
+            }
+
+            // Añadir el elemento <style> al <head> del documento
+            document.head.appendChild(style);
+        }
+
+        // Llamada a la función para crear y añadir el estilo
+        createStyles();
+
+        window.onload = function () {
+            window.maze = new Maze({
+                gridElement: document.getElementById('grid'),
+                gridSize: new Point(20, 15),
+                blockSize: 50,
+                onSolved: function () {
+                    showCongratulationsScreen();
+                }
+            });
+            maze.reset();
+        }
+
+        function whileAsync(cond, body, chunkSize, period) {
+            var chunkSize = chunkSize || 10;
+            var period = period || 0;
+            return new Promise(function (resolve, reject) {
+                var interval = setInterval(function () {
+                    for (var k = 0; k < chunkSize; k++) {
+                        if (!cond()) {
+                            clearInterval(interval);
+                            resolve();
+                            return;
+                        }
+                        body();
+                    }
+                }, period);
+            });
+        }
+
+        function addEphemeralClass(element, className, duration) {
+            var duration = duration || 1000;
+            element.classList.add(className);
+            setTimeout(function () {
+                element.classList.remove(className);
+            }, duration);
+        }
+
+        function Point(x, y) {
+            this.x = parseInt(x);
+            this.y = parseInt(y);
+        }
+
+        Point.prototype.equals = function (other) {
+            return other.x == this.x && other.y == this.y;
+        }
+
+        Point.prototype.serialize = function () {
+            return JSON.stringify([this.x, this.y]);
+        }
+
+        Point.prototype.insideBounds = function (bounds) {
+            return (
+                (this.x >= 0 && this.x < bounds.x) &&
+                (this.y >= 0 && this.y < bounds.y));
+        }
+
+        Point.prototype.offset = function (delta) {
+            return new Point(this.x + parseInt(delta[0]), this.y + parseInt(delta[1]));
+        }
+
+        function showCongratulationsScreen() {
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            overlay.style.color = 'white';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '1000';
+            overlay.innerHTML = `
+        <h2>${congratulationsMessage}</h2>
+        <img src="${imagenDelPremioBase64}" alt="Premio" style="max-width: 80%; margin-bottom: 20px;">
+        <p>${prizeDescription}</p>
+    `;
+
+            // Crear el botón de cierre dentro de JavaScript para asegurar el acceso a `overlay`
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'Cerrar';
+            closeButton.style.padding = '10px';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.cursor = 'pointer';
+            // Asignar evento onclick al botón para que elimine el overlay
+            closeButton.onclick = function () {
+                document.body.removeChild(overlay);
+            };
+
+            // Añadir el botón al overlay
+            overlay.appendChild(closeButton);
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(overlay);
+        }
+
+        function Maze(options) {
+            var options = Object.assign({
+                gridElement: document.getElementById('body'),
+                gridSize: new Point(20, 15),
+                startPosition: new Point(0, 0),
+                targetPosition: null,
+                blockSize: 50,
+                onSolved: function () { },
+            }, options || {});
+
+            this.gridElement = options.gridElement;
+            this.blockSize = options.blockSize;
+            this.onSolved = options.onSolved;
+            this.bounds = options.gridSize;
+            this.startPosition = options.startPosition
+            this.targetPosition = options.targetPosition || this.bounds.offset([-1, -1]);
+
+            this.sides = ['bottom', 'right', 'top', 'left'];
+            this.oppositeSides = ['top', 'left', 'bottom', 'right'];
+            this.delta = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+            this.keyCodeDirMap = { 37: 'left', 38: 'top', 39: 'right', 40: 'bottom' };
+
+            this.blocks = new Array(this.bounds.y);
+            for (var i = 0; i < this.bounds.y; i++) {
+                this.blocks[i] = new Array(this.bounds.x);
+            }
+
+            var self = this;
+            document.onkeydown = function (e) {
+                if (self.solving || self.solved) {
+                    return;
+                }
+                if (e.keyCode in self.keyCodeDirMap) {
+                    self.movePlayer(self.keyCodeDirMap[e.keyCode]);
+                    e.preventDefault();
+                }
+            };
+        }
+
+        Maze.prototype.createBlock = function (p) {
+            var block = document.createElement('div');
+            block.classList.add('block');
+            block.style.left = (p.x * this.blockSize) + 'px';
+            block.style.top = (p.y * this.blockSize) + 'px';
+            block.open = { left: false, top: false, bottom: false, right: false };
+            return block;
+        }
+
+        Maze.prototype.getBlock = function (point) {
+            return this.blocks[point.y][point.x];
+        }
+
+        Maze.prototype.getPlayerBlock = function () {
+            return this.getBlock(this.position);
+        }
+
+        Maze.prototype.reset = function () {
+            if (this.solving || this.reseting) {
+                return false;
+            }
+
+            this.reseting = true;
+            this.position = this.startPosition;
+            this.solving = false;
+            this.solved = false;
+
+            while (this.gridElement.firstChild) {
+                this.gridElement.removeChild(this.gridElement.firstChild);
+            }
+
+            var fragment = document.createDocumentFragment();
+            for (var x = 0; x < this.bounds.x; x++) {
+                for (var y = 0; y < this.bounds.y; y++) {
+                    var block = this.createBlock(new Point(x, y), 25);
+                    this.blocks[y][x] = block;
+                    fragment.appendChild(block);
+                }
+            }
+            this.gridElement.appendChild(fragment);
+
+            this.getBlock(this.targetPosition).classList.add('target');
+
+            var self = this;
+            return this.generate().then(function () {
+                self.setPlayerPosition(self.startPosition);
+                self.reseting = false;
+            })
+        }
+
+        Maze.prototype.getAdjacents = function (point, visitedSet) {
+            var adjacents = [];
+            for (var i = 0; i < this.delta.length; i++) {
+                var cp = point.offset(this.delta[i]);
+                cp.side = this.sides[i];
+                cp.oppositeSide = this.oppositeSides[i];
+                if (cp.insideBounds(this.bounds) && !visitedSet.has(cp.serialize())) {
+                    adjacents.push(cp);
+                }
+            }
+            return adjacents;
+        }
+
+        Maze.prototype.movePlayer = function (direction) {
+            var currentBlock = this.getPlayerBlock();
+            var delta = this.delta[this.sides.indexOf(direction)];
+            var nextPosition = this.position.offset(delta);
+
+            if (!nextPosition.insideBounds(this.bounds)) {
+                addEphemeralClass(currentBlock, 'error', 100);
+                return;
+            }
+
+            if (!currentBlock.open[direction]) {
+                addEphemeralClass(currentBlock, 'error', 100);
+                return;
+            }
+
+            this.setPlayerPosition(nextPosition);
+        }
+
+        Maze.prototype.setPlayerPosition = function (position) {
+            this.getPlayerBlock().classList.remove('current');
+            this.position = position;
+            this.getPlayerBlock().classList.add('current');
+            if (!this.solved && this.position.equals(this.targetPosition)) {
+                this.solved = true;
+                if (!this.solving) {
+                    this.onSolved();
+                }
+            }
+        }
+
+        Maze.prototype.generate = function () {
+            var blockCount = this.bounds.x * this.bounds.y;
+            var stack = [];
+            var visited = new Set();
+            var start = this.startPosition;
+            stack.push(start);
+
+            var i = 0;
+            return whileAsync(() => visited.size < blockCount, () => {
+                var point = stack[stack.length - 1];
+                var ps = point.serialize();
+
+                var block = this.getBlock(point);
+
+                if (!visited.has(ps)) {
+                    visited.add(ps);
+                    block.dataset.index = i;
+                    block.classList.add('generated');
+                    i++;
+                }
+
+                var adjacents = this.getAdjacents(point, visited);
+
+                if (adjacents.length == 0) {
+                    stack.pop();
+                    return;
+                }
+
+                var rand = parseInt(Math.random() * 1000);
+                var np = adjacents[rand % adjacents.length]
+                var ajdBlock = this.getBlock(np);
+                stack.push(np);
+
+                // Remove the wall on the current block.
+                block.classList.add(np.side);
+                block.open[np.side] = true;
+
+                // And the opposite side for the adjacent block's perspective.
+                ajdBlock.classList.add(np.oppositeSide);
+                ajdBlock.open[np.oppositeSide] = true;
+            }, 100);
+        }
+
+    </script>
+</body>
+
+</html>
