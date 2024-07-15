@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Language Choice</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 91%;
+            margin-left: 3%;
+        }
+
+        .initial {
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            width: 100%;
+            height: 30vh;
+            padding: 2em;
+            border: 1px solid black;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            display: none;
+        }
+
+        .mensaje {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            justify-content: center;
+            font-size: 54px;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        p {
+            font-size: 54px;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        label {
+            background-color: #007BFF;
+            color: #FFFFFF;
+            padding: 20px 40px;
+            margin: 20px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 50px;
+            transition: background-color 0.3s;
+        }
+
+        label:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            label {
+                width: calc(100% - 20px);
+            }
+
+            .container {
+                padding: 1em;
+            }
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        #english:checked~.container .initial,
+        #spanish:checked~.container .initial {
+            display: none;
+        }
+
+        #english:checked~.container #message-english,
+        #spanish:checked~.container #message-spanish {
+            display: block;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="radio" name="language" id="english">
+    <input type="radio" name="language" id="spanish">
+
+    <div class="container">
+        <div class="initial">
+            <p>English or Spanish?</p>
+            <div>
+
+                <label for="english">English</label>
+                <label for="spanish">Spanish</label>
+            </div>
+        </div>
+        <div class="mensaje">
+            <p id="message-english" class="message">The first one to move is ...</p>
+            <p id="message-spanish" class="message">El primero que se mueva es ...</p>
+
+        </div>
+    </div>
+</body>
+
+</html>
