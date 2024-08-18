@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Rasca y gana</title>
+<style>
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(#fff -100%, #888);
+  font-family: "Arial Black", "Archivo Black", sans-serif;
+  overflow: hidden;
+  cursor: none;
+}
+
+.scratch-win {
+  position: relative;
+  padding: 1rem 2rem 2rem 2rem;
+  background: linear-gradient(#78d6c6 -150%, #12486b);
+  border: 0.2rem solid #ffdc73;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0.2rem 0.2rem 1rem 0 rgba(0, 0, 56, 0.3);
+}
+@media screen and (max-width: 500px) {
+  .scratch-win {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .scratch-win__coin {
+    transform: scale(0.8);
+  }
+}
+.scratch-win:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(-70deg, transparent, transparent 50%, rgba(255, 255, 255, 0.1) 57%, transparent 60%);
+  background-size: 300% 100%;
+  animation: shinning;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+}
+@keyframes shinning {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+.scratch-win__title {
+  width: 100%;
+  margin: 0 auto 1rem;
+  color: #ffdc73;
+  font-size: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  background: -webkit-linear-gradient(#ffdc73, #a67c00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.scratch-win__scratcher {
+  position: relative;
+  width: 20rem;
+  height: 10rem;
+}
+.scratch-win__background, .scratch-win__foreground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.scratch-win__background {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  background-color: #fff;
+  text-transform: uppercase;
+  font-size: 3.6rem;
+}
+.scratch-win__background:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(transparent, transparent 0.5rem, #888 0.5rem, #888 0.6rem);
+  opacity: 0.5;
+}
+.scratch-win--ready .scratch-win__background {
+  display: flex;
+}
+.scratch-win__coin {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--top) - 5rem);
+  left: calc(var(--left) - 3rem);
+  width: 6rem;
+  height: 6rem;
+  pointer-events: none;
+}
+.scratch-win__coin-side {
+  position: absolute;
+  top: -0.4rem;
+  left: 0;
+  z-index: -1;
+  width: calc(100% + 0.6rem);
+  height: calc(100% + 0.6rem);
+  border-radius: 50%;
+  outline: 0.1rem solid #a67c00;
+  background: repeating-linear-gradient(90deg, #d4af37 0, #d4af37 0.5rem, #ffdc73 0.5rem, #ffdc73 0.7rem);
+  box-shadow: 0 1rem 1rem -0.5rem rgba(0, 0, 56, 0.5);
+}
+@supports (-webkit-hyphens: none) {
+  .scratch-win__coin-side {
+    outline: none;
+  }
+}
+.scratch-win__coin-base {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0.3rem dashed #d4af37;
+  outline: 0.1rem solid #a67c00;
+  border-radius: 50%;
+  background: radial-gradient(circle at 0 0, #ffdc73, #d4af37 150%);
+  box-shadow: inset 0 -0.1rem 0 0 #a67c00;
+}
+@supports (-webkit-hyphens: none) {
+  .scratch-win__coin-base {
+    outline: none;
+  }
+}
+.scratch-win__coin-base:before, .scratch-win__coin-base:after {
+  content: "€";
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 4rem;
+}
+.scratch-win__coin-base:before {
+  color: #a67c00;
+  transform: rotate(45deg) translateX(-0.4rem) translateY(-0.25rem);
+}
+.scratch-win__coin-base:after {
+  color: #d4af37;
+  transform: rotate(45deg) translateX(-0.3rem) translateY(-0.2rem);
+  background: -webkit-linear-gradient(#ffdc73 -50%, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100%;
+  height: 200%;
+  pointer-events: none;
+  --top-position: -350vh;
+}
+.confetti__item {
+  position: absolute;
+  box-shadow: 1rem 1rem 1rem 0 rgba(0, 0, 56, 0.5);
+}
+.confetti__item:nth-child(1) {
+  top: calc(0.3030932703 * 150% + var(--top-position));
+  left: calc(0.711568122 * 100%);
+  transform: scale(max(2.5008824368, 2)) rotate(74.507162665deg);
+}
+.confetti__item:nth-child(2) {
+  top: calc(0.5933882864 * 150% + var(--top-position));
+  left: calc(0.4237452595 * 100%);
+  transform: scale(max(1.6028235329, 2)) rotate(26.797837042deg);
+}
+.confetti__item:nth-child(3) {
+  top: calc(0.831620032 * 150% + var(--top-position));
+  left: calc(0.523307363 * 100%);
+  transform: scale(max(3.6270892076, 2)) rotate(53.6988291746deg);
+}
+.confetti__item:nth-child(4) {
+  top: calc(0.7368467008 * 150% + var(--top-position));
+  left: calc(0.7538152422 * 100%);
+  transform: scale(max(1.0260142591, 2)) rotate(12.4779028419deg);
+}
+.confetti__item:nth-child(5) {
+  top: calc(0.3426548438 * 150% + var(--top-position));
+  left: calc(0.4969225309 * 100%);
+  transform: scale(max(0.301002953, 2)) rotate(8.0015273185deg);
+}
+.confetti__item:nth-child(6) {
+  top: calc(0.4548642613 * 150% + var(--top-position));
+  left: calc(0.883204881 * 100%);
+  transform: scale(max(0.5215546788, 2)) rotate(4.9378283873deg);
+}
+.confetti__item:nth-child(7) {
+  top: calc(0.8285414219 * 150% + var(--top-position));
+  left: calc(0.0532997944 * 100%);
+  transform: scale(max(3.6348810132, 2)) rotate(67.4171844704deg);
+}
+.confetti__item:nth-child(8) {
+  top: calc(0.1284389334 * 150% + var(--top-position));
+  left: calc(0.5627155661 * 100%);
+  transform: scale(max(0.5390642105, 2)) rotate(69.7196492367deg);
+}
+.confetti__item:nth-child(9) {
+  top: calc(0.1527633415 * 150% + var(--top-position));
+  left: calc(0.5050736119 * 100%);
+  transform: scale(max(0.0003866253, 2)) rotate(67.0255950066deg);
+}
+.confetti__item:nth-child(10) {
+  top: calc(0.3626617597 * 150% + var(--top-position));
+  left: calc(0.4883650485 * 100%);
+  transform: scale(max(0.4927314653, 2)) rotate(32.068676014deg);
+}
+.confetti__item:nth-child(11) {
+  top: calc(0.8975007593 * 150% + var(--top-position));
+  left: calc(0.2332077319 * 100%);
+  transform: scale(max(1.6329863992, 2)) rotate(88.9648452324deg);
+}
+.confetti__item:nth-child(12) {
+  top: calc(0.9268182682 * 150% + var(--top-position));
+  left: calc(0.2394169576 * 100%);
+  transform: scale(max(4.2013067172, 2)) rotate(52.2489004828deg);
+}
+.confetti__item:nth-child(13) {
+  top: calc(0.8374553006 * 150% + var(--top-position));
+  left: calc(0.7842993294 * 100%);
+  transform: scale(max(1.7407621618, 2)) rotate(62.1176447537deg);
+}
+.confetti__item:nth-child(14) {
+  top: calc(0.4165199875 * 150% + var(--top-position));
+  left: calc(0.1196530165 * 100%);
+  transform: scale(max(1.802139376, 2)) rotate(22.4870555365deg);
+}
+.confetti__item:nth-child(15) {
+  top: calc(0.2797239311 * 150% + var(--top-position));
+  left: calc(0.6305694053 * 100%);
+  transform: scale(max(1.0661976421, 2)) rotate(74.7313778046deg);
+}
+.confetti__item:nth-child(16) {
+  top: calc(0.1171656111 * 150% + var(--top-position));
+  left: calc(0.3447197798 * 100%);
+  transform: scale(max(4.2104551623, 2)) rotate(15.1023671783deg);
+}
+.confetti__item:nth-child(17) {
+  top: calc(0.2395937436 * 150% + var(--top-position));
+  left: calc(0.4457653718 * 100%);
+  transform: scale(max(4.3460485754, 2)) rotate(62.0921635454deg);
+}
+.confetti__item:nth-child(18) {
+  top: calc(0.7081809066 * 150% + var(--top-position));
+  left: calc(0.6062637061 * 100%);
+  transform: scale(max(4.4636218505, 2)) rotate(29.0753836434deg);
+}
+.confetti__item:nth-child(19) {
+  top: calc(0.0941020896 * 150% + var(--top-position));
+  left: calc(0.7872866033 * 100%);
+  transform: scale(max(1.8521550654, 2)) rotate(81.3327788575deg);
+}
+.confetti__item:nth-child(20) {
+  top: calc(0.2086794037 * 150% + var(--top-position));
+  left: calc(0.4400841027 * 100%);
+  transform: scale(max(4.8531715519, 2)) rotate(72.5308400184deg);
+}
+.confetti__item:nth-child(21) {
+  top: calc(0.2313238879 * 150% + var(--top-position));
+  left: calc(0.6674507024 * 100%);
+  transform: scale(max(3.4820468063, 2)) rotate(80.8773028256deg);
+}
+.confetti__item:nth-child(22) {
+  top: calc(0.8193421132 * 150% + var(--top-position));
+  left: calc(0.1101555319 * 100%);
+  transform: scale(max(3.2234915555, 2)) rotate(23.7141070363deg);
+}
+.confetti__item:nth-child(23) {
+  top: calc(0.7873634419 * 150% + var(--top-position));
+  left: calc(0.3367528771 * 100%);
+  transform: scale(max(3.88343057, 2)) rotate(86.0848909902deg);
+}
+.confetti__item:nth-child(24) {
+  top: calc(0.6449385988 * 150% + var(--top-position));
+  left: calc(0.0230779221 * 100%);
+  transform: scale(max(2.5703816684, 2)) rotate(32.2254882106deg);
+}
+.confetti__item:nth-child(25) {
+  top: calc(0.6799323265 * 150% + var(--top-position));
+  left: calc(0.9232966608 * 100%);
+  transform: scale(max(3.2409369378, 2)) rotate(9.8273276001deg);
+}
+.confetti__item:nth-child(26) {
+  top: calc(0.1314668963 * 150% + var(--top-position));
+  left: calc(0.2045073716 * 100%);
+  transform: scale(max(1.3490809895, 2)) rotate(27.0858181937deg);
+}
+.confetti__item:nth-child(27) {
+  top: calc(0.6145514778 * 150% + var(--top-position));
+  left: calc(0.8687552081 * 100%);
+  transform: scale(max(0.6212093611, 2)) rotate(86.3774536035deg);
+}
+.confetti__item:nth-child(28) {
+  top: calc(0.5035383894 * 150% + var(--top-position));
+  left: calc(0.0074716522 * 100%);
+  transform: scale(max(3.9041598302, 2)) rotate(6.6730660045deg);
+}
+.confetti__item:nth-child(29) {
+  top: calc(0.1762157588 * 150% + var(--top-position));
+  left: calc(0.5070350756 * 100%);
+  transform: scale(max(1.7490160218, 2)) rotate(47.6809792171deg);
+}
+.confetti__item:nth-child(30) {
+  top: calc(0.9956328609 * 150% + var(--top-position));
+  left: calc(0.5324158466 * 100%);
+  transform: scale(max(0.3001865604, 2)) rotate(6.884850528deg);
+}
+.confetti__item:nth-child(31) {
+  top: calc(0.0482584086 * 150% + var(--top-position));
+  left: calc(0.968241322 * 100%);
+  transform: scale(max(2.8119012445, 2)) rotate(14.7745977488deg);
+}
+.confetti__item:nth-child(32) {
+  top: calc(0.7065803734 * 150% + var(--top-position));
+  left: calc(0.9525765214 * 100%);
+  transform: scale(max(2.754114145, 2)) rotate(12.0678845093deg);
+}
+.confetti__item:nth-child(33) {
+  top: calc(0.2999575464 * 150% + var(--top-position));
+  left: calc(0.5348746083 * 100%);
+  transform: scale(max(0.336239834, 2)) rotate(43.9837098624deg);
+}
+.confetti__item:nth-child(34) {
+  top: calc(0.3579967092 * 150% + var(--top-position));
+  left: calc(0.754476826 * 100%);
+  transform: scale(max(0.6323282301, 2)) rotate(4.5814482062deg);
+}
+.confetti__item:nth-child(35) {
+  top: calc(0.8483362692 * 150% + var(--top-position));
+  left: calc(0.6026422087 * 100%);
+  transform: scale(max(1.0513254784, 2)) rotate(30.3708669993deg);
+}
+.confetti__item:nth-child(36) {
+  top: calc(0.7220801619 * 150% + var(--top-position));
+  left: calc(0.1505798909 * 100%);
+  transform: scale(max(1.3088499693, 2)) rotate(0.895808484deg);
+}
+.confetti__item:nth-child(37) {
+  top: calc(0.0178883096 * 150% + var(--top-position));
+  left: calc(0.4484302407 * 100%);
+  transform: scale(max(4.725384432, 2)) rotate(58.5149661439deg);
+}
+.confetti__item:nth-child(38) {
+  top: calc(0.1007454996 * 150% + var(--top-position));
+  left: calc(0.8772820649 * 100%);
+  transform: scale(max(0.2261095932, 2)) rotate(18.624099344deg);
+}
+.confetti__item:nth-child(39) {
+  top: calc(0.5163561929 * 150% + var(--top-position));
+  left: calc(0.9527892362 * 100%);
+  transform: scale(max(4.0289990454, 2)) rotate(41.8474312124deg);
+}
+.confetti__item:nth-child(40) {
+  top: calc(0.2040635979 * 150% + var(--top-position));
+  left: calc(0.9183195283 * 100%);
+  transform: scale(max(0.906113948, 2)) rotate(8.5777780679deg);
+}
+.confetti__item:nth-child(41) {
+  top: calc(0.4193294245 * 150% + var(--top-position));
+  left: calc(0.1848574787 * 100%);
+  transform: scale(max(2.3144669518, 2)) rotate(52.5057413471deg);
+}
+.confetti__item:nth-child(42) {
+  top: calc(0.688874318 * 150% + var(--top-position));
+  left: calc(0.4303943064 * 100%);
+  transform: scale(max(1.856103841, 2)) rotate(16.7469418918deg);
+}
+.confetti__item:nth-child(43) {
+  top: calc(0.670577132 * 150% + var(--top-position));
+  left: calc(0.4057317288 * 100%);
+  transform: scale(max(1.2707487063, 2)) rotate(14.2701035761deg);
+}
+.confetti__item:nth-child(44) {
+  top: calc(0.1439442957 * 150% + var(--top-position));
+  left: calc(0.2905202285 * 100%);
+  transform: scale(max(3.3767692801, 2)) rotate(53.6149280525deg);
+}
+.confetti__item:nth-child(45) {
+  top: calc(0.8489549411 * 150% + var(--top-position));
+  left: calc(0.2858955891 * 100%);
+  transform: scale(max(3.4376562396, 2)) rotate(82.9591484793deg);
+}
+.confetti__item:nth-child(46) {
+  top: calc(0.5636823 * 150% + var(--top-position));
+  left: calc(0.7087208494 * 100%);
+  transform: scale(max(1.4525487635, 2)) rotate(27.7693465362deg);
+}
+.confetti__item:nth-child(47) {
+  top: calc(0.2755133548 * 150% + var(--top-position));
+  left: calc(0.6049029429 * 100%);
+  transform: scale(max(3.5651799544, 2)) rotate(80.5235815984deg);
+}
+.confetti__item:nth-child(48) {
+  top: calc(0.3539783177 * 150% + var(--top-position));
+  left: calc(0.4257401386 * 100%);
+  transform: scale(max(3.113969958, 2)) rotate(14.8174758603deg);
+}
+.confetti__item:nth-child(49) {
+  top: calc(0.1829272203 * 150% + var(--top-position));
+  left: calc(0.4677696763 * 100%);
+  transform: scale(max(4.6766231724, 2)) rotate(13.0817850578deg);
+}
+.confetti__item:nth-child(50) {
+  top: calc(0.0720431454 * 150% + var(--top-position));
+  left: calc(0.0049868613 * 100%);
+  transform: scale(max(2.3864057127, 2)) rotate(80.7466966887deg);
+}
+.confetti__item:nth-child(51) {
+  top: calc(0.7374894231 * 150% + var(--top-position));
+  left: calc(0.7397450753 * 100%);
+  transform: scale(max(1.9176235137, 2)) rotate(55.5468134164deg);
+}
+.confetti__item:nth-child(52) {
+  top: calc(0.601733386 * 150% + var(--top-position));
+  left: calc(0.701246053 * 100%);
+  transform: scale(max(2.6242760937, 2)) rotate(21.4000157325deg);
+}
+.confetti__item:nth-child(53) {
+  top: calc(0.8990824642 * 150% + var(--top-position));
+  left: calc(0.6577289141 * 100%);
+  transform: scale(max(2.1987493309, 2)) rotate(70.1686490818deg);
+}
+.confetti__item:nth-child(54) {
+  top: calc(0.0227980363 * 150% + var(--top-position));
+  left: calc(0.0486143139 * 100%);
+  transform: scale(max(0.0762695313, 2)) rotate(85.0276779416deg);
+}
+.confetti__item:nth-child(55) {
+  top: calc(0.8725825877 * 150% + var(--top-position));
+  left: calc(0.6741317212 * 100%);
+  transform: scale(max(2.8700839751, 2)) rotate(27.275323959deg);
+}
+.confetti__item:nth-child(56) {
+  top: calc(0.6896020517 * 150% + var(--top-position));
+  left: calc(0.014483288 * 100%);
+  transform: scale(max(4.4930184669, 2)) rotate(51.1887855402deg);
+}
+.confetti__item:nth-child(57) {
+  top: calc(0.0107737195 * 150% + var(--top-position));
+  left: calc(0.6471082352 * 100%);
+  transform: scale(max(2.5700450805, 2)) rotate(7.2811910827deg);
+}
+.confetti__item:nth-child(58) {
+  top: calc(0.7936483767 * 150% + var(--top-position));
+  left: calc(0.5850731264 * 100%);
+  transform: scale(max(4.8069838643, 2)) rotate(11.0682587406deg);
+}
+.confetti__item:nth-child(59) {
+  top: calc(0.0207057193 * 150% + var(--top-position));
+  left: calc(0.013772288 * 100%);
+  transform: scale(max(1.3642670286, 2)) rotate(42.4983384677deg);
+}
+.confetti__item:nth-child(60) {
+  top: calc(0.3340392298 * 150% + var(--top-position));
+  left: calc(0.9279097791 * 100%);
+  transform: scale(max(0.1992474176, 2)) rotate(39.5242981168deg);
+}
+.confetti__item:nth-child(61) {
+  top: calc(0.0519108589 * 150% + var(--top-position));
+  left: calc(0.6250310566 * 100%);
+  transform: scale(max(4.8250164703, 2)) rotate(3.5851732226deg);
+}
+.confetti__item:nth-child(62) {
+  top: calc(0.0489483541 * 150% + var(--top-position));
+  left: calc(0.024613312 * 100%);
+  transform: scale(max(4.4052773232, 2)) rotate(52.6181757718deg);
+}
+.confetti__item:nth-child(63) {
+  top: calc(0.6008723691 * 150% + var(--top-position));
+  left: calc(0.0640568991 * 100%);
+  transform: scale(max(2.8345805979, 2)) rotate(12.0659026306deg);
+}
+.confetti__item:nth-child(64) {
+  top: calc(0.3223451998 * 150% + var(--top-position));
+  left: calc(0.8797775266 * 100%);
+  transform: scale(max(1.9409315681, 2)) rotate(86.977155354deg);
+}
+.confetti__item:nth-child(65) {
+  top: calc(0.9099665084 * 150% + var(--top-position));
+  left: calc(0.4829856744 * 100%);
+  transform: scale(max(2.7632463681, 2)) rotate(47.1605455542deg);
+}
+.confetti__item:nth-child(66) {
+  top: calc(0.6016895791 * 150% + var(--top-position));
+  left: calc(0.1064967799 * 100%);
+  transform: scale(max(3.1744290232, 2)) rotate(24.8490786308deg);
+}
+.confetti__item:nth-child(67) {
+  top: calc(0.0032806291 * 150% + var(--top-position));
+  left: calc(0.7290355016 * 100%);
+  transform: scale(max(2.2880940496, 2)) rotate(2.5546301099deg);
+}
+.confetti__item:nth-child(68) {
+  top: calc(0.0874487925 * 150% + var(--top-position));
+  left: calc(0.6075538388 * 100%);
+  transform: scale(max(3.6110205693, 2)) rotate(80.9129523474deg);
+}
+.confetti__item:nth-child(69) {
+  top: calc(0.4336448977 * 150% + var(--top-position));
+  left: calc(0.1364347497 * 100%);
+  transform: scale(max(1.3537913764, 2)) rotate(9.6398858891deg);
+}
+.confetti__item:nth-child(70) {
+  top: calc(0.1026006401 * 150% + var(--top-position));
+  left: calc(0.4169154288 * 100%);
+  transform: scale(max(1.9692826741, 2)) rotate(61.7099758303deg);
+}
+.confetti__item:nth-child(71) {
+  top: calc(0.1667018426 * 150% + var(--top-position));
+  left: calc(0.4699466495 * 100%);
+  transform: scale(max(4.7077337744, 2)) rotate(80.7672510522deg);
+}
+.confetti__item:nth-child(72) {
+  top: calc(0.4915989468 * 150% + var(--top-position));
+  left: calc(0.5589193526 * 100%);
+  transform: scale(max(4.6823591679, 2)) rotate(43.370430449deg);
+}
+.confetti__item:nth-child(73) {
+  top: calc(0.1900789271 * 150% + var(--top-position));
+  left: calc(0.5400025408 * 100%);
+  transform: scale(max(3.668512705, 2)) rotate(54.7978055278deg);
+}
+.confetti__item:nth-child(74) {
+  top: calc(0.319074567 * 150% + var(--top-position));
+  left: calc(0.9720589652 * 100%);
+  transform: scale(max(4.6670200106, 2)) rotate(85.8861660474deg);
+}
+.confetti__item:nth-child(75) {
+  top: calc(0.1470446105 * 150% + var(--top-position));
+  left: calc(0.6819040784 * 100%);
+  transform: scale(max(1.585038216, 2)) rotate(76.9953004007deg);
+}
+.confetti__item:nth-child(76) {
+  top: calc(0.0805017356 * 150% + var(--top-position));
+  left: calc(0.4087746061 * 100%);
+  transform: scale(max(4.9428138164, 2)) rotate(47.9890656796deg);
+}
+.confetti__item:nth-child(77) {
+  top: calc(0.4268748148 * 150% + var(--top-position));
+  left: calc(0.415333768 * 100%);
+  transform: scale(max(0.9162891889, 2)) rotate(82.0629323859deg);
+}
+.confetti__item:nth-child(78) {
+  top: calc(0.5090874784 * 150% + var(--top-position));
+  left: calc(0.8054859972 * 100%);
+  transform: scale(max(3.6888754012, 2)) rotate(10.1373814057deg);
+}
+.confetti__item:nth-child(79) {
+  top: calc(0.7608765949 * 150% + var(--top-position));
+  left: calc(0.1749572871 * 100%);
+  transform: scale(max(1.0591446427, 2)) rotate(64.6537328782deg);
+}
+.confetti__item:nth-child(80) {
+  top: calc(0.3180125709 * 150% + var(--top-position));
+  left: calc(0.7279596025 * 100%);
+  transform: scale(max(2.3294166393, 2)) rotate(8.4580546506deg);
+}
+.confetti__item:nth-child(81) {
+  top: calc(0.2845902396 * 150% + var(--top-position));
+  left: calc(0.5063515021 * 100%);
+  transform: scale(max(3.8346368381, 2)) rotate(40.4700194959deg);
+}
+.confetti__item:nth-child(82) {
+  top: calc(0.8780494869 * 150% + var(--top-position));
+  left: calc(0.9302684888 * 100%);
+  transform: scale(max(3.5461573197, 2)) rotate(31.1584819658deg);
+}
+.confetti__item:nth-child(83) {
+  top: calc(0.1050550023 * 150% + var(--top-position));
+  left: calc(0.5299028712 * 100%);
+  transform: scale(max(4.6414097792, 2)) rotate(38.7273969015deg);
+}
+.confetti__item:nth-child(84) {
+  top: calc(0.0120606074 * 150% + var(--top-position));
+  left: calc(0.6860171556 * 100%);
+  transform: scale(max(2.766903716, 2)) rotate(79.2566560088deg);
+}
+.confetti__item:nth-child(85) {
+  top: calc(0.5673623064 * 150% + var(--top-position));
+  left: calc(0.1813432491 * 100%);
+  transform: scale(max(4.515336958, 2)) rotate(83.5736325982deg);
+}
+.confetti__item:nth-child(86) {
+  top: calc(0.8957796548 * 150% + var(--top-position));
+  left: calc(0.5047912842 * 100%);
+  transform: scale(max(2.11536767, 2)) rotate(32.6456347069deg);
+}
+.confetti__item:nth-child(87) {
+  top: calc(0.1212877443 * 150% + var(--top-position));
+  left: calc(0.7696996147 * 100%);
+  transform: scale(max(3.1779035756, 2)) rotate(43.3207988774deg);
+}
+.confetti__item:nth-child(88) {
+  top: calc(0.3498492949 * 150% + var(--top-position));
+  left: calc(0.6875236206 * 100%);
+  transform: scale(max(4.2808902034, 2)) rotate(21.2411375549deg);
+}
+.confetti__item:nth-child(89) {
+  top: calc(0.406965339 * 150% + var(--top-position));
+  left: calc(0.0767715765 * 100%);
+  transform: scale(max(4.4212487942, 2)) rotate(21.3710346386deg);
+}
+.confetti__item:nth-child(90) {
+  top: calc(0.4314979894 * 150% + var(--top-position));
+  left: calc(0.85451392 * 100%);
+  transform: scale(max(2.8472078718, 2)) rotate(11.1481225224deg);
+}
+.confetti__item:nth-child(91) {
+  top: calc(0.6884474778 * 150% + var(--top-position));
+  left: calc(0.9536323456 * 100%);
+  transform: scale(max(1.9423140013, 2)) rotate(20.2662851226deg);
+}
+.confetti__item:nth-child(92) {
+  top: calc(0.7438749968 * 150% + var(--top-position));
+  left: calc(0.7071264452 * 100%);
+  transform: scale(max(2.6641908358, 2)) rotate(37.725209031deg);
+}
+.confetti__item:nth-child(93) {
+  top: calc(0.2301398641 * 150% + var(--top-position));
+  left: calc(0.4623053101 * 100%);
+  transform: scale(max(0.3497990159, 2)) rotate(50.9851129933deg);
+}
+.confetti__item:nth-child(94) {
+  top: calc(0.1925370691 * 150% + var(--top-position));
+  left: calc(0.5191088157 * 100%);
+  transform: scale(max(0.8363673824, 2)) rotate(43.7201337784deg);
+}
+.confetti__item:nth-child(95) {
+  top: calc(0.7284371129 * 150% + var(--top-position));
+  left: calc(0.7312738374 * 100%);
+  transform: scale(max(2.4056252707, 2)) rotate(83.6813612231deg);
+}
+.confetti__item:nth-child(96) {
+  top: calc(0.7153034722 * 150% + var(--top-position));
+  left: calc(0.3803914401 * 100%);
+  transform: scale(max(1.0492270528, 2)) rotate(17.4568504908deg);
+}
+.confetti__item:nth-child(97) {
+  top: calc(0.6176012915 * 150% + var(--top-position));
+  left: calc(0.0862822303 * 100%);
+  transform: scale(max(1.7365621424, 2)) rotate(30.4187296158deg);
+}
+.confetti__item:nth-child(98) {
+  top: calc(0.4092411384 * 150% + var(--top-position));
+  left: calc(0.7037535407 * 100%);
+  transform: scale(max(2.6310779768, 2)) rotate(12.2974676805deg);
+}
+.confetti__item:nth-child(99) {
+  top: calc(0.1963201754 * 150% + var(--top-position));
+  left: calc(0.6747495481 * 100%);
+  transform: scale(max(3.0322754517, 2)) rotate(78.9837689048deg);
+}
+.confetti__item:nth-child(100) {
+  top: calc(0.6694200578 * 150% + var(--top-position));
+  left: calc(0.0178670698 * 100%);
+  transform: scale(max(0.4361252338, 2)) rotate(14.0708387679deg);
+}
+.confetti__item:nth-child(101) {
+  top: calc(0.2316219681 * 150% + var(--top-position));
+  left: calc(0.5031970548 * 100%);
+  transform: scale(max(0.974554742, 2)) rotate(64.789048831deg);
+}
+.confetti__item:nth-child(102) {
+  top: calc(0.497152109 * 150% + var(--top-position));
+  left: calc(0.8656145567 * 100%);
+  transform: scale(max(1.6744172373, 2)) rotate(44.9286743597deg);
+}
+.confetti__item:nth-child(103) {
+  top: calc(0.5882735126 * 150% + var(--top-position));
+  left: calc(0.9884678857 * 100%);
+  transform: scale(max(1.0952814377, 2)) rotate(17.4521679925deg);
+}
+.confetti__item:nth-child(104) {
+  top: calc(0.1753443197 * 150% + var(--top-position));
+  left: calc(0.0490993974 * 100%);
+  transform: scale(max(2.8187046576, 2)) rotate(41.0482038935deg);
+}
+.confetti__item:nth-child(105) {
+  top: calc(0.2014988185 * 150% + var(--top-position));
+  left: calc(0.0695421313 * 100%);
+  transform: scale(max(1.7831042248, 2)) rotate(45.6731464285deg);
+}
+.confetti__item:nth-child(106) {
+  top: calc(0.2658150888 * 150% + var(--top-position));
+  left: calc(0.4090170215 * 100%);
+  transform: scale(max(1.8169578578, 2)) rotate(44.6423037611deg);
+}
+.confetti__item:nth-child(107) {
+  top: calc(0.7836845669 * 150% + var(--top-position));
+  left: calc(0.6547960621 * 100%);
+  transform: scale(max(1.1451103297, 2)) rotate(21.9071099063deg);
+}
+.confetti__item:nth-child(108) {
+  top: calc(0.3206179568 * 150% + var(--top-position));
+  left: calc(0.0697945499 * 100%);
+  transform: scale(max(2.5818126089, 2)) rotate(21.3778030228deg);
+}
+.confetti__item:nth-child(109) {
+  top: calc(0.5062857358 * 150% + var(--top-position));
+  left: calc(0.2509030835 * 100%);
+  transform: scale(max(1.528621651, 2)) rotate(34.9131069654deg);
+}
+.confetti__item:nth-child(110) {
+  top: calc(0.227839942 * 150% + var(--top-position));
+  left: calc(0.7861300827 * 100%);
+  transform: scale(max(0.1291876797, 2)) rotate(21.269294707deg);
+}
+.confetti__item:nth-child(111) {
+  top: calc(0.9176442316 * 150% + var(--top-position));
+  left: calc(0.2175969299 * 100%);
+  transform: scale(max(1.2244623246, 2)) rotate(78.2087607075deg);
+}
+.confetti__item:nth-child(112) {
+  top: calc(0.9465694863 * 150% + var(--top-position));
+  left: calc(0.4297963606 * 100%);
+  transform: scale(max(0.665731277, 2)) rotate(73.42311801deg);
+}
+.confetti__item:nth-child(113) {
+  top: calc(0.6731787045 * 150% + var(--top-position));
+  left: calc(0.7206202599 * 100%);
+  transform: scale(max(2.5647274207, 2)) rotate(8.1680471292deg);
+}
+.confetti__item:nth-child(114) {
+  top: calc(0.5353180649 * 150% + var(--top-position));
+  left: calc(0.2673101136 * 100%);
+  transform: scale(max(1.6641900509, 2)) rotate(70.852427033deg);
+}
+.confetti__item:nth-child(115) {
+  top: calc(0.1809709734 * 150% + var(--top-position));
+  left: calc(0.5148512684 * 100%);
+  transform: scale(max(4.4650997432, 2)) rotate(3.7067316318deg);
+}
+.confetti__item:nth-child(116) {
+  top: calc(0.9257416911 * 150% + var(--top-position));
+  left: calc(0.2642664777 * 100%);
+  transform: scale(max(0.6414673094, 2)) rotate(19.2674160177deg);
+}
+.confetti__item:nth-child(117) {
+  top: calc(0.7890602446 * 150% + var(--top-position));
+  left: calc(0.7727502459 * 100%);
+  transform: scale(max(2.6322701827, 2)) rotate(4.9152586158deg);
+}
+.confetti__item:nth-child(118) {
+  top: calc(0.5511861133 * 150% + var(--top-position));
+  left: calc(0.5650750226 * 100%);
+  transform: scale(max(2.4565335374, 2)) rotate(82.677752042deg);
+}
+.confetti__item:nth-child(119) {
+  top: calc(0.8519015651 * 150% + var(--top-position));
+  left: calc(0.291946479 * 100%);
+  transform: scale(max(1.2475464853, 2)) rotate(15.8315278392deg);
+}
+.confetti__item:nth-child(120) {
+  top: calc(0.1493599845 * 150% + var(--top-position));
+  left: calc(0.9142795747 * 100%);
+  transform: scale(max(2.8412977688, 2)) rotate(41.0226953328deg);
+}
+.confetti--active {
+  --top-position: 200vh;
+}
+.confetti--active .confetti__item {
+  transition: top 10s ease;
+}
+.confetti--active .confetti__item:nth-child(3n) {
+  transition: top 8s ease;
+}
+.confetti--active .confetti__item:nth-child(4n) {
+  transition: top 12s ease;
+}
+</style>
+</head>
+<body>
+<div id="scratch-win" class="scratch-win">
+  <div class="scratch-win__title"> Rasca y gana</div>
+  <div class="scratch-win__scratcher">
+    <div class="scratch-win__background">Ganaste una cenita</div>
+    <canvas id="canvas" class="scratch-win__foreground"></canvas>
+  </div>
+</div>
+
+<div id="coin" class="scratch-win__coin">
+  <div class="scratch-win__coin-side"></div>
+  <div class="scratch-win__coin-base"></div>
+</div>
+
+<div id="confetti" class="confetti">
+  <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg>
+  <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg>
+  <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#a864fd" />
+  </svg> <svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg><svg class="confetti__item confetti__item--circle" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.979033 1.30301C1.85813 0.337112 3.35383 0.26675 4.31973 1.14585C5.28563 2.02495 5.35599 3.52065 4.47684 4.48647C3.59775 5.45237 2.10205 5.52273 1.13623 4.64358C0.170248 3.76453 0.0999339 2.26891 0.979033 1.30301Z" fill="#29cdff" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#78ff44" />
+  </svg> <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+  <svg class="confetti__item confetti__item--square" width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.30075 0.975439L5.14456 4.94522C5.13632 5.15408 4.96042 5.3166 4.75161 5.30844L0.781828 5.15225C0.572971 5.14401 0.410451 4.96811 0.41861 4.7593L0.5748 0.789518C0.583039 0.580661 0.758938 0.418139 0.967749 0.426298L4.93753 0.582489C5.14639 0.590727 5.30896 0.766708 5.30075 0.975439Z" fill="#ff718d" />
+  </svg>
+</div>
+  <script>
+  const scratchWin = document.getElementById("scratch-win");
+const coin = document.getElementById("coin");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const width = 320;
+const height = 160;
+
+canvas.width = width;
+canvas.height = height;
+
+const gradient = ctx.createLinearGradient(0, 0, width, height);
+
+gradient.addColorStop(0, "#d4af37");
+gradient.addColorStop(0.3, "#a67c00");
+gradient.addColorStop(0.5, "#d4af37");
+gradient.addColorStop(0.8, "#a67c00");
+gradient.addColorStop(1, "#d4af37");
+
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, width, height);
+
+scratchWin.classList.add("scratch-win--ready");
+
+const confetti = document.getElementById("confetti");
+const maxPixels = width * height;
+
+const calculateTransparency = () => {
+  const imageData = ctx.getImageData(0, 0, width, height).data;
+  const alphaValues = imageData.filter(
+    (value, index) => index % 4 === 4 - 1 && value === 0
+  );
+
+  return alphaValues.length / maxPixels;
+};
+
+const mouseFunction = (mouse) => {
+  const clientX = mouse.clientX ? mouse.clientX : mouse.touches[0].clientX;
+  const clientY = mouse.clientY ? mouse.clientY : mouse.touches[0].clientY;
+  coin.style = `--top: ${clientY}px; --left: ${clientX}px;`;
+  const canvasPosition = canvas.getBoundingClientRect();
+  const canvasX = clientX - canvasPosition.left;
+  const canvasY = clientY - canvasPosition.top;
+
+  if (canvasX > 0 && canvasX < width && canvasY > 0 && canvasY < height) {
+    ctx.clearRect(canvasX - 10, canvasY - 10, 20, 20);
+
+    if (calculateTransparency() > 0.8) {
+      confetti.classList.add("confetti--active");
+    }
+  }
+};
+
+window.addEventListener("mousemove", mouseFunction);
+window.addEventListener("touchmove", mouseFunction);
+  </script>
+
+</body>
+</html>
