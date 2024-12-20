@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="¡Feliz Año Nuevo! Celebrando el 2025 con un diseño interactivo de fuegos artificiales y buenos deseos."
+        />
+        <title>Feliz Año Nuevo</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background: radial-gradient(circle, #1e3c72, #2a5298);
+                overflow: hidden;
+                font-family: 'Poppins', sans-serif;
+                color: #fff;
+                user-select: none;
+                cursor: pointer;
+            }
+
+            h1 {
+                font-size: 4rem;
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+                margin: 20px;
+                animation: pulse 2s infinite;
+            }
+
+            p {
+                font-size: 1.5rem;
+                text-align: center;
+                margin: 20px;
+            }
+
+            .fireworks {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes explosion {
+                0% {
+                    transform: scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0;
+                }
+            }
+
+            .firework {
+                position: absolute;
+                border-radius: 50%;
+                animation: explosion 1s ease-out infinite;
+                pointer-events: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>🎉 ¡Feliz Año Nuevo 2025! 🎉</h1>
+        <p>
+            Que este año esté lleno de éxito, felicidad y grandes logros. ¡Gracias por ser parte de esta comunidad increíble!
+        </p>
+        <canvas class="fireworks"></canvas>
+        <script>
+            const canvas = document.querySelector('.fireworks')
+            const ctx = canvas.getContext('2d')
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+
+            const colors = ['#FF5733', '#FFC300', '#DAF7A6', '#FF33F6', '#33FFF0']
+
+            function random(min, max) {
+                return Math.random() * (max - min) + min
+            }
+
+            function createParticle(x, y, color) {
+                const radius = random(2, 5)
+                const angle = random(0, Math.PI * 2)
+                const speed = random(2, 10)
+                const vx = Math.cos(angle) * speed
+                const vy = Math.sin(angle) * speed
+                const alpha = 1
+
+                return { x, y, radius, vx, vy, color, alpha }
+            }
+
+            function createFirework(x, y) {
+                const particles = []
+                const color = colors[Math.floor(random(0, colors.length))]
+                for (let i = 0; i < 100; i++) {
+                    particles.push(createParticle(x, y, color))
+                }
+                return particles
+            }
+
+            const fireworks = []
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                fireworks.forEach((firework, index) => {
+                    firework.forEach(particle => {
+                        ctx.globalAlpha = particle.alpha
+                        ctx.fillStyle = particle.color
+                        ctx.beginPath()
+                        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
+                        ctx.fill()
+                        particle.x += particle.vx
+                        particle.y += particle.vy
+                        particle.alpha -= 0.02
+                    })
+                    fireworks[index] = firework.filter(p => p.alpha > 0)
+                    if (fireworks[index].length === 0) fireworks.splice(index, 1)
+                })
+                requestAnimationFrame(draw)
+            }
+
+            canvas.addEventListener('click', e => {
+                const { clientX, clientY } = e
+                fireworks.push(createFirework(clientX, clientY))
+            })
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth
+                canvas.height = window.innerHeight
+            })
+
+            draw()
+
+            setTimeout(() => {
+                fireworks.push(createFirework(canvas.width / 2, canvas.height / 3))
+            }, 500)
+        </script>
+    </body>
+</html>
