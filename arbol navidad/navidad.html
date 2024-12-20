@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Feliz Navidad - Una cálida felicitación de temporada con un diseño interactivo de árbol de Navidad y Papá Noel animado."
+        />
+        <title>Feliz Navidad</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Poppins', Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+                background: linear-gradient(135deg, #1e3c72, #2a5298);
+                color: #fff;
+                overflow: hidden;
+            }
+
+            h1 {
+                font-size: 3rem;
+                margin-bottom: 20px;
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            }
+
+            .tree {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                animation: fadeIn 2s ease-in-out;
+                cursor: pointer;
+            }
+
+            .tree:hover div {
+                transform: scale(1.1);
+            }
+
+            .tree div {
+                background-color: #4caf50;
+                width: 0;
+                height: 0;
+                border-left: 60px solid transparent;
+                border-right: 60px solid transparent;
+                border-bottom: 60px solid #4caf50;
+                margin-bottom: -20px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease, background-color 0.3s ease;
+            }
+
+            .tree div:hover {
+                background-color: #3e8e41;
+            }
+
+            .tree div:nth-child(2) {
+                border-left-width: 80px;
+                border-right-width: 80px;
+                border-bottom-width: 80px;
+            }
+
+            .tree div:nth-child(3) {
+                border-left-width: 100px;
+                border-right-width: 100px;
+                border-bottom-width: 100px;
+            }
+
+            .star {
+                color: gold;
+                font-size: 2.5rem;
+                margin-bottom: -10px;
+                animation: twinkle 1.5s infinite;
+                cursor: pointer;
+            }
+
+            .star:hover {
+                color: #ffd700;
+                transform: rotate(15deg);
+                transition: transform 0.3s ease, color 0.3s ease;
+            }
+
+            .trunk {
+                width: 30px;
+                height: 50px;
+                background-color: #8b4513;
+                border-radius: 5px;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+                transition: background-color 0.3s ease;
+            }
+
+            .trunk:hover {
+                background-color: #a0522d;
+            }
+
+            .message {
+                margin-top: 30px;
+                font-size: 1.4rem;
+                text-align: center;
+                max-width: 600px;
+                line-height: 1.6;
+                text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+            }
+
+            .cta {
+                margin-top: 15px;
+                font-size: 1.2rem;
+                color: #ffd700;
+                font-weight: bold;
+                text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+            }
+
+            .santa {
+                position: absolute;
+                bottom: 20px;
+                left: -100px;
+                width: 100px;
+                animation: santaMove 5s linear infinite;
+            }
+
+            @keyframes santaMove {
+                0% {
+                    transform: translateX(-120px);
+                }
+                50% {
+                    transform: translateX(400px);
+                }
+                100% {
+                    transform: translateX(-120px);
+                }
+            }
+
+            @keyframes twinkle {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Feliz Navidad</h1>
+        <div class="tree">
+            <div class="star">★</div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div class="trunk"></div>
+        </div>
+        <img src="Santa-Claus.png" alt="Santa Claus" class="santa" />
+        <p class="message">
+            Que esta temporada esté llena de alegría, amor y grandes proyectos que iluminen vuestros caminos. 🌟
+        </p>
+        <p class="cta">🎄 ¡ Feliz Navidad a todos ! ✨</p>
+    </body>
+</html>
